@@ -7,7 +7,7 @@ class User(models.Model):
     last_name= models.CharField(max_length = 50)
     email = models.EmailField(unique = True)
     password = models.CharField(max_length = 100)
-    phone = models.BigIntegerField()
+    phone = models.CharField(max_length=15)
     address = models.CharField(max_length= 255)
 
 class Restaurant(models.Model):
@@ -32,7 +32,7 @@ class Order(models.Model):
         ('in_progress','In Progress'),
         ('deliverd','Deliverd')
     ]
-    user_id = models.ForeignKey(User,on_delete= models.CASCADE)
+    user = models.ForeignKey(User,on_delete= models.CASCADE)
     order_date= models.DateField(auto_now_add = True)
     status = models.CharField(max_length=20,choices = STATUS_CHOICES,default='placed')
 
