@@ -10,17 +10,29 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15)
     address = models.CharField(max_length= 255)
 
+    def __str__(self) -> str:
+        return self.first_name
+
 class Restaurant(models.Model):
     name = models.CharField(max_length= 100)
     description = models.CharField(max_length = 255)
     location = models.CharField(max_length= 255)
 
+    def __str__(self) -> str:
+        return self.name
+    
+    class Meta:
+        ordering = ['name']
+
 class Menu(models.Model):
     title= models.CharField(max_length= 255)
-    restaurant = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant,related_name= 'menus',on_delete=models.CASCADE)
     description = models.CharField(max_length = 255)
 
-class Items(models.Model):
+    def __str__(self):
+        return self.title
+
+class MenuItems(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length= 255)
     price = models.DecimalField(max_digits=5,decimal_places= 2)
@@ -33,7 +45,7 @@ class Order(models.Model):
         ('deliverd','Deliverd')
     ]
     customer = models.ForeignKey(Customer,on_delete= models.CASCADE)
-    items = models.ManyToManyField(Items)
+    items = models.ManyToManyField(MenuItems)
     total_price = models.DecimalField(max_digits=5,decimal_places = 2)
     status = models.CharField(max_length=20,choices = STATUS_CHOICES,default='placed')
     created_at = models.DateTimeField()
@@ -50,7 +62,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order_id = models.ForeignKey(Order,on_delete=models.CASCADE)
-    item_id = models.ForeignKey(Items,on_delete= models.CASCADE)
+    item_id = models.ForeignKey(MenuItems,on_delete= models.CASCADE)
     quantity = models.PositiveIntegerField()
 
 
